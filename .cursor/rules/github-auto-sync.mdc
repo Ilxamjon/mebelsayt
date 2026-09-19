@@ -1,0 +1,16 @@
+---
+description: Har bir muhim o'zgarishdan keyin GitHubga avtomatik push qilish
+alwaysApply: true
+---
+
+# GitHub auto-sync
+
+Bu loyihaning remote: `origin` → https://github.com/Ilxamjon/mebelsayt
+
+Har safar kod o'zgartirilganda (yangi feature, fix, refactor) agent session oxirida:
+
+1. `.env`, `*.db`, secrets ni commit qilma
+2. `git add` + qisqa commit message
+3. `git push -u origin HEAD`
+
+Agar `.cursor/hooks` auto-push ishlasa ham, muhim o'zgarishlardan keyin qo'lda ham push qilish mumkin.
