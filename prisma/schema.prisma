@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  sortOrder Int       @default(0)
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id          String           @id @default(cuid())
+  name        String
+  slug        String           @unique
+  description String
+  categoryId  String
+  category    Category         @relation(fields: [categoryId], references: [id])
+  isFeatured  Boolean          @default(false)
+  isActive    Boolean          @default(true)
+  sortOrder   Int              @default(0)
+  variants    ProductVariant[]
+  media       ProductMedia[]
+  specs       ProductSpec[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model ProductVariant {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sizeLabel     String
+  width         Int?
+  depth         Int?
+  height        Int?
+  sku           String   @unique
+  price         Int
+  discountPrice Int?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ProductMedia {
+  id        String    @id @default(cuid())
+  productId String
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  type      MediaType
+  url       String
+  alt       String    @default("")
+  sortOrder Int       @default(0)
+}
+
+model ProductSpec {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label     String
+  value     String
+  sortOrder Int     @default(0)
+}
+
+model DiscountRule {
+  id         String    @id @default(cuid())
+  name       String
+  percent    Int
+  skuPattern String?
+  categoryId String?
+  startsAt   DateTime?
+  endsAt     DateTime?
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Order {
+  id         String   @id @default(cuid())
+  name       String
+  phone      String
+  email      String?
+  comment    String?
+  items      String
+  totalPrice Int
+  crmSent    Boolean  @default(false)
+  crmId      String?
+  createdAt  DateTime @default(now())
+}
+
+enum MediaType {
+  GALLERY
+  INTERIOR
+  BLUEPRINT
+  VIDEO
+}
